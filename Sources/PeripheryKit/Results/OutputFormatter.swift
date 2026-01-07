@@ -62,8 +62,20 @@ extension OutputFormatter {
                 if !inherited.isEmpty {
                     msg += " (replace with '\(inherited.sorted().joined(separator: ", "))')"
                 }
+<<<<<<< HEAD
 
                 return ($0.location, msg)
+=======
+            case let .redundantPublicAccessibility(modules):
+                let modulesJoined = modules.sorted().joined(separator: ", ")
+                description += "Redundant public accessibility for \(kindDisplayName) '\(name)' (not used outside of \(modulesJoined))"
+            case let .redundantInternalAccessibility(_, suggestedAccessibility):
+                let accessibilityText = suggestedAccessibility?.rawValue ?? "private/fileprivate"
+                description += "Redundant internal accessibility for \(kindDisplayName) '\(name)' (not used outside of file; can be \(accessibilityText)"
+            case let .redundantFilePrivateAccessibility(_, containingTypeName):
+                let context = containingTypeName.map { "only used within \($0)" } ?? "not used outside of file"
+                description += "Redundant fileprivate accessibility for \(kindDisplayName) '\(name)' (\(context); can be private)"
+>>>>>>> d4483b0 (Handle implicit internal, fix false positives and false negatives, refactor checking)
             }
         case let .redundantPublicAccessibility(modules):
             let modulesJoined = modules.sorted().joined(separator: ", ")

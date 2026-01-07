@@ -238,9 +238,14 @@ public final class Configuration {
         $retainPublic, $noRetainSPI, $retainFiles, $retainAssignOnlyProperties, $retainAssignOnlyPropertyTypes, $retainObjcAccessible,
         $retainObjcAnnotated, $retainUnusedProtocolFuncParams, $retainSwiftUIPreviews, $disableRedundantPublicAnalysis,
         $disableRedundantInternalAnalysis, $disableRedundantFilePrivateAnalysis, $showNestedRedundantAccessibility,
+<<<<<<< HEAD
         $disableUnusedImportAnalysis, $superfluousIgnoreComments, $retainUnusedImportedModules,
         $externalEncodableProtocols, $externalCodableProtocols, $externalTestCaseClasses, $verbose, $quiet, $color,
         $disableUpdateCheck, $strict, $indexStorePath,
+=======
+        $disableUnusedImportAnalysis, $retainUnusedImportedModules, $externalEncodableProtocols, $externalCodableProtocols,
+        $externalTestCaseClasses, $verbose, $quiet, $color, $disableUpdateCheck, $strict, $indexStorePath,
+>>>>>>> d4483b0 (Handle implicit internal, fix false positives and false negatives, refactor checking)
         $skipBuild, $skipSchemesValidation, $cleanBuild, $buildArguments, $xcodeListArguments, $relativeResults,
         $jsonPackageManifestPath, $retainCodableProperties, $retainEncodableProperties, $retainEquatableProperties,
         $retainHashableProperties, $baseline, $writeBaseline,

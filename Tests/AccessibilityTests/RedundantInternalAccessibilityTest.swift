@@ -176,6 +176,7 @@ final class RedundantInternalAccessibilityTest: SPMSourceGraphTestCase {
 
         assertNotRedundantInternalAccessibility(.struct("ImplicitlyInternalStructUsedFromAnotherFile"))
     }
+<<<<<<< HEAD
 
     /// Tests that internal declarations accessed from test files via @testable import
     /// are NOT flagged as redundant internal.
@@ -537,4 +538,6 @@ final class RedundantInternalAccessibilityTest: SPMSourceGraphTestCase {
         assertNotRedundantInternalAccessibility(.struct("SameFileMemberwiseStruct"))
         assertNotRedundantInternalAccessibility(.struct("SameFileOuterStruct"))
     }
+=======
+>>>>>>> d4483b0 (Handle implicit internal, fix false positives and false negatives, refactor checking)
 }
