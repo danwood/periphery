@@ -7,14 +7,10 @@ public struct ScanResult {
         case assignOnlyProperty
         case redundantProtocol(references: Set<Reference>, inherited: Set<String>)
         case redundantPublicAccessibility(modules: Set<String>)
-<<<<<<< HEAD
         case redundantInternalAccessibility(suggestedAccessibility: Accessibility?)
         case redundantFilePrivateAccessibility(containingTypeName: String?)
+        case redundantAccessibility(files: Set<SourceFile>)
         case superfluousIgnoreCommand
-=======
-        case redundantInternalAccessibility(files: Set<SourceFile>, suggestedAccessibility: Accessibility?)
-        case redundantFilePrivateAccessibility(files: Set<SourceFile>, containingTypeName: String?)
->>>>>>> d4483b0 (Handle implicit internal, fix false positives and false negatives, refactor checking)
     }
 
     let declaration: Declaration
