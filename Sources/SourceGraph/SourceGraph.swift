@@ -11,6 +11,7 @@ public final class SourceGraph {
     public private(set) var redundantPublicAccessibility: [Declaration: Set<String>] = [:]
     public private(set) var redundantInternalAccessibility: [Declaration: (files: Set<SourceFile>, suggestedAccessibility: Accessibility?)] = [:]
     public private(set) var redundantFilePrivateAccessibility: [Declaration: (files: Set<SourceFile>, containingTypeName: String?)] = [:]
+    public private(set) var redundantAccessibility: [Declaration: Set<SourceFile>] = [:]
     public private(set) var rootReferences: Set<Reference> = []
     public private(set) var allReferences: Set<Reference> = []
     public private(set) var retainedDeclarations: Set<Declaration> = []
@@ -106,6 +107,10 @@ public final class SourceGraph {
         } else {
             redundantFilePrivateAccessibility[declaration] = (files: [file], containingTypeName: containingTypeName)
         }
+    }
+
+    func markRedundantAccessibility(_ declaration: Declaration, file: SourceFile) {
+        redundantAccessibility[declaration, default: []].insert(file)
     }
 
     func markIgnored(_ declaration: Declaration) {

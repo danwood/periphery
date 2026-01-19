@@ -10,6 +10,7 @@ public struct ScanResult {
         case redundantInternalAccessibility(files: Set<SourceFile>, suggestedAccessibility: Accessibility?)
         case redundantFilePrivateAccessibility(files: Set<SourceFile>, containingTypeName: String?)
         case superfluousIgnoreCommand
+        case redundantAccessibility(files: Set<SourceFile>)
     }
 
     let declaration: Declaration

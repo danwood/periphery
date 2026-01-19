@@ -39,6 +39,8 @@ extension OutputFormatter {
             "redundantFilePrivateAccessibility"
         case .superfluousIgnoreCommand:
             "superfluousIgnoreCommand"
+        case .redundantAccessibility:
+            "redundantAccessibility"
         }
     }
 
@@ -72,10 +74,21 @@ extension OutputFormatter {
                 description += "Redundant public accessibility for \(kindDisplayName) '\(name)' (not used outside of \(modulesJoined))"
             case let .redundantInternalAccessibility(_, suggestedAccessibility):
                 let accessibilityText = suggestedAccessibility?.rawValue ?? "private/fileprivate"
-                description += "Redundant internal accessibility for \(kindDisplayName) '\(name)' (not used outside of file; can be \(accessibilityText))"
+
+                // Hint: if we wanted to output the USR for helping build bazel.json, we could also output:
+                // result.declaration.usrs.joined(separator: ", ")
+
+                // Check if there's a setter-specific modifier like "private(set)"
+                let setterModifier = result.declaration.modifiers.first { $0.contains("(set)") } ?? "internal"
+                description += "Redundant \(setterModifier) accessibility for \(kindDisplayName) '\(name)' (not used outside of file; can be \(accessibilityText))"
             case let .redundantFilePrivateAccessibility(_, containingTypeName):
                 let context = containingTypeName.map { "only used within \($0)" } ?? "not used outside of file"
-                description += "Redundant fileprivate accessibility for \(kindDisplayName) '\(name)' (\(context); can be private)"
+                // Check if there's a setter-specific modifier like "private(set)"
+                let setterModifier = result.declaration.modifiers.first { $0.contains("(set)") } ?? "fileprivate"
+                description += "Redundant \(setterModifier) accessibility for \(kindDisplayName) '\(name)' (\(context); can be private)"
+            case .redundantAccessibility:
+                let accessLevel = result.declaration.accessibility.value.rawValue
+                description += "Redundant \(accessLevel) accessibility for \(kindDisplayName) '\(name)' (matches enclosing type's access level)"
             case .superfluousIgnoreCommand:
                 description += "Superfluous ignore comment for \(kindDisplayName) '\(name)' (declaration is referenced and should not be ignored)"
             }
