@@ -40,8 +40,13 @@ final class SwiftUIRetainer: SourceGraphMutator {
     }
 
     private func retainApplicationDelegateAdaptors() {
-        graph
-            .mainAttributedDeclarations
+        // SwiftUI App conformances don't carry a @main attribute in source (the compiler synthesizes
+        // the entry point), so mainAttributedDeclarations is empty for SwiftUI apps. Fall back to
+        // searching all class/struct declarations when no @main-attributed type is found.
+        let candidateParents: Set<Declaration> = graph.mainAttributedDeclarations.isEmpty
+            ? graph.declarations(ofKinds: [.class, .struct])
+            : graph.mainAttributedDeclarations
+        candidateParents
             .lazy
             .flatMap(\.declarations)
             .filter { $0.kind == .varInstance }
