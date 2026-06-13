@@ -1103,6 +1103,31 @@ final class RetentionTest: FixtureSourceGraphTestCase {
         }
     }
 
+    func testDoesNotRetainClassInitializersWhenMultipleDeclared() {
+        analyze(retainPublic: true) {
+            assertReferenced(.class("FixtureClass401")) {
+                self.assertNotReferenced(.functionConstructor("init(value:)"))
+                self.assertNotReferenced(.functionConstructor("init(other:)"))
+            }
+        }
+    }
+
+    func testDoesNotRetainSoleStructInitializer() {
+        analyze(retainPublic: true) {
+            assertReferenced(.struct("FixtureStruct225")) {
+                self.assertNotReferenced(.functionConstructor("init(value:)"))
+            }
+        }
+    }
+
+    func testRetainsUsedSoleClassInitializer() {
+        analyze(retainPublic: true) {
+            assertReferenced(.class("FixtureClass402")) {
+                self.assertReferenced(.functionConstructor("init(value:)"))
+            }
+        }
+    }
+
     // https://github.com/apple/swift/issues/56541
     func testStaticMemberUsedAsSubscriptKey() {
         analyze(retainPublic: true) {
