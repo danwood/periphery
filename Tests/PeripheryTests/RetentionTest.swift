@@ -1095,6 +1095,14 @@ final class RetentionTest: FixtureSourceGraphTestCase {
         }
     }
 
+    func testRetainsSoleRequiredClassInitializer() {
+        analyze(retainPublic: true) {
+            assertReferenced(.class("FixtureClass400")) {
+                self.assertReferenced(.functionConstructor("init(value:)"))
+            }
+        }
+    }
+
     // https://github.com/apple/swift/issues/56541
     func testStaticMemberUsedAsSubscriptKey() {
         analyze(retainPublic: true) {
