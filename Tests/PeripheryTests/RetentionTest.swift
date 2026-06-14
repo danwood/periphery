@@ -1060,6 +1060,25 @@ final class RetentionTest: FixtureSourceGraphTestCase {
         }
     }
 
+    func testRetainsInitializedConstantProperties() {
+        analyze(retainPublic: true, retainAssignOnlyProperties: false) {
+            // The initializer is used, so its assignment and parameter are load-bearing and the
+            // `let` property must be retained rather than reported as assign-only.
+            assertReferenced(.struct("FixtureStruct230")) {
+                self.assertReferenced(.functionConstructor("init(identifier:)"))
+                self.assertReferenced(.varInstance("identifier"))
+                self.assertNotAssignOnlyProperty(.varInstance("identifier"))
+            }
+
+            // The initializer is never called, so the `let` property remains safely removable and
+            // is still reported as assign-only.
+            assertReferenced(.struct("FixtureStruct231")) {
+                self.assertNotReferenced(.functionConstructor("init(identifier:)"))
+                self.assertAssignOnlyProperty(.varInstance("identifier"))
+            }
+        }
+    }
+
     func testRetainsFilesOption() {
         analyze(retainFiles: [testFixturePath.string]) {
             assertReferenced(.class("FixtureClass100"))
