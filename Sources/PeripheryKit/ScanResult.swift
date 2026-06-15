@@ -7,6 +7,9 @@ public struct ScanResult {
         case assignOnlyProperty
         case redundantProtocol(references: Set<Reference>, inherited: Set<String>)
         case redundantPublicAccessibility(modules: Set<String>)
+        case redundantInternalAccessibility(suggestedAccessibility: Accessibility?)
+        case redundantFilePrivateAccessibility(containingTypeName: String?)
+        case redundantAccessibility(files: Set<SourceFile>)
         case superfluousIgnoreCommand
     }
 

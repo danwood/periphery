@@ -5,6 +5,8 @@ PublicDeclarationInInternalParentRetainer().retain()
 PublicExtensionOnRedundantPublicKindRetainer().retain()
 IgnoreCommentCommandRetainer().retain()
 IgnoreAllCommentCommandRetainer().retain()
+RedundantFilePrivateClassRetainer().retain()
+InternalPropertyUsedInExtensionRetainer().retain()
 
 _ = PublicTypeUsedAsPublicInitializerParameterTypeRetainer()
 
@@ -80,8 +82,28 @@ inlinableFunction()
 _ = PublicInheritedAssociatedTypeClass().items
 _ = PublicInheritedAssociatedTypeDefaultTypeClass().items
 
+<<<<<<< HEAD
 // Extension with same-type generic requirement
 takeExtensionSameTypeGenericRequirement(.defaultInstance)
 
 // Typed throws
 try? PublicTypeUsedAsPublicFunctionThrowTypeRetainer().retain()
+
+=======
+>>>>>>> d4483b0 (Handle implicit internal, fix false positives and false negatives, refactor checking)
+// Redundant accessibility tests
+TrulyRedundantFilePrivateMembersRetainer().retain()
+ProtocolRequirementAccessibilityRetainer().retain()
+PropertyWrapperAccessibilityRetainer().retain()
+NestedTypeAccessibilityRetainer().retain()
+InternalSuggestingPrivateVsFileprivateRetainer().retain()
+ImplicitlyInternalRetainer().retain()
+NotRedundantInternalClassComponents_Support().useImplicitlyInternalStruct()
+<<<<<<< HEAD
+InternalTypeAsReturnTypeRetainer().retain()
+InternalTypeTransitivelyExposedInSameFileRetainer().retain()
+TransitiveAccessExposureRetainer().retain()
+MethodCalledFromFreeFunctionRetainer().retain()
+MemberwiseInitCalledFromDifferentTypeRetainer().retain()
+=======
+>>>>>>> d4483b0 (Handle implicit internal, fix false positives and false negatives, refactor checking)

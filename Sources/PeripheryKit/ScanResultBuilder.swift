@@ -10,6 +10,9 @@ public enum ScanResultBuilder {
             .union(graph.unusedModuleImports)
         let redundantProtocols = graph.redundantProtocols.filter { !removableDeclarations.contains($0.0) }
         let redundantPublicAccessibility = graph.redundantPublicAccessibility.filter { !removableDeclarations.contains($0.0) }
+        let redundantInternalAccessibility = graph.redundantInternalAccessibility.filter { !removableDeclarations.contains($0.0) }
+        let redundantFilePrivateAccessibility = graph.redundantFilePrivateAccessibility.filter { !removableDeclarations.contains($0.0) }
+        let redundantAccessibility = graph.redundantAccessibility.filter { !removableDeclarations.contains($0.0) }
 
         let annotatedRemovableDeclarations: [ScanResult] = removableDeclarations.flatMap { removableDeclaration in
             var extensionResults = [ScanResult]()
@@ -41,6 +44,19 @@ public enum ScanResultBuilder {
         let annotatedRedundantPublicAccessibility: [ScanResult] = redundantPublicAccessibility.map {
             .init(declaration: $0.0, annotation: .redundantPublicAccessibility(modules: $0.1))
         }
+        let annotatedRedundantInternalAccessibility: [ScanResult] = redundantInternalAccessibility.map {
+<<<<<<< HEAD
+            .init(declaration: $0.key, annotation: .redundantInternalAccessibility(suggestedAccessibility: $0.value))
+        }
+        let annotatedRedundantFilePrivateAccessibility: [ScanResult] = redundantFilePrivateAccessibility.map {
+            .init(declaration: $0.key, annotation: .redundantFilePrivateAccessibility(containingTypeName: $0.value))
+=======
+            .init(declaration: $0.0, annotation: .redundantInternalAccessibility(files: $0.1.files, suggestedAccessibility: $0.1.suggestedAccessibility))
+        }
+        let annotatedRedundantFilePrivateAccessibility: [ScanResult] = redundantFilePrivateAccessibility.map {
+            .init(declaration: $0.0, annotation: .redundantFilePrivateAccessibility(files: $0.1.files, containingTypeName: $0.1.containingTypeName))
+>>>>>>> d4483b0 (Handle implicit internal, fix false positives and false negatives, refactor checking)
+        }
 
         let annotatedSuperfluousIgnoreCommands: [ScanResult] = {
             guard configuration.superfluousIgnoreComments else { return [] }
@@ -62,11 +78,18 @@ public enum ScanResultBuilder {
                 + superfluousParamResults
         }()
 
+        let annotatedRedundantAccessibility: [ScanResult] = redundantAccessibility.map {
+            .init(declaration: $0.0, annotation: .redundantAccessibility(files: $0.1))
+        }
         let allAnnotatedDeclarations = annotatedRemovableDeclarations +
             annotatedAssignOnlyProperties +
             annotatedRedundantProtocols +
             annotatedRedundantPublicAccessibility +
-            annotatedSuperfluousIgnoreCommands
+            annotatedRedundantInternalAccessibility +
+            annotatedRedundantFilePrivateAccessibility +
+            annotatedSuperfluousIgnoreCommands +
+            annotatedRedundantFilePrivateAccessibility +
+            annotatedRedundantAccessibility
 
         return allAnnotatedDeclarations
             .filter { result in

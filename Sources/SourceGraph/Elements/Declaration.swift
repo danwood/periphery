@@ -98,6 +98,10 @@ public final class Declaration {
             Set(Kind.allCases.filter(\.isExtensionKind))
         }
 
+        static let concreteTypeKinds: Set<Kind> = [.class, .struct, .enum, .protocol]
+
+        static let allTypeKinds: Set<Kind> = concreteTypeKinds.union(extensionKinds)
+
         public var extendedKind: Kind? {
             switch self {
             case .extensionClass:
@@ -231,6 +235,7 @@ public final class Declaration {
     public var related: Set<Reference> = []
     public var isImplicit: Bool = false
     public var isObjcAccessible: Bool = false
+    public var referencedFiles: Set<SourceFile>
 
     private let hashValueCache: Int
 
@@ -296,6 +301,7 @@ public final class Declaration {
         self.kind = kind
         self.usrs = usrs
         self.location = location
+        self.referencedFiles = [location.file]
         hashValueCache = usrs.hashValue
     }
 
