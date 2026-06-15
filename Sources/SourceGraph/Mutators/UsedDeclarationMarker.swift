@@ -66,6 +66,17 @@ final class UsedDeclarationMarker: SourceGraphMutator {
             for ref in declaration.related {
                 markUsed(declarationsReferenced(by: ref))
             }
+
+            // Follow return-type and parameter-type references from child function declarations.
+            // A nested type used only as the return or parameter type of a sibling method has no
+            // reference occurrence of its own; the index store records the type reference against
+            // the method declaration. When the enclosing type is used, walking these references
+            // ensures such a nested type is retained rather than falsely flagged as unused.
+            for childDecl in declaration.declarations where childDecl.kind.isFunctionKind {
+                for ref in childDecl.references where ref.role == .returnType || ref.role == .parameterType {
+                    markUsed(declarationsReferenced(by: ref))
+                }
+            }
         }
     }
 

@@ -882,6 +882,15 @@ final class RetentionTest: FixtureSourceGraphTestCase {
         }
     }
 
+    func testRetainsNestedTypeUsedAsSiblingMethodSignatureType() {
+        analyze(retainPublic: true) {
+            assertReferenced(.struct("FixtureStruct231")) {
+                self.assertReferenced(.struct("FixtureStruct232"))
+                self.assertReferenced(.enum("FixtureEnum231"))
+            }
+        }
+    }
+
     func testRetainsStringInterpolationAppendInterpolation() {
         analyze(retainPublic: true) {
             assertReferenced(.extensionStruct("DefaultStringInterpolation")) {
