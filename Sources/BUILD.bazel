@@ -83,6 +83,7 @@ swift_library(
         "SourceGraph/Mutators/RedundantExplicitPublicAccessibilityMarker.swift",
         "SourceGraph/Mutators/RedundantProtocolMarker.swift",
         "SourceGraph/Mutators/ResultBuilderRetainer.swift",
+        "SourceGraph/Mutators/StateProjectedValueRetainer.swift",
         "SourceGraph/Mutators/StringInterpolationAppendInterpolationRetainer.swift",
         "SourceGraph/Mutators/StructImplicitInitializerReferenceBuilder.swift",
         "SourceGraph/Mutators/SwiftTestingRetainer.swift",
