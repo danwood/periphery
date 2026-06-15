@@ -75,6 +75,9 @@ targets.append(contentsOf: [
     ),
     .target(
         name: "AppIntentsRetentionFixtures"
+    ),
+    .target(
+        name: "SwiftUIStateRetentionFixtures"
     )
 ])
 #endif

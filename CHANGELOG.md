@@ -13,6 +13,7 @@
 ##### Bug Fixes
 
 - Follow embedded bundle and plugin edges transitively in the generated Bazel scan rule so custom Bazel queries can avoid building incorrectly transitioned targets while still analyzing extension- and plugin-reachable code.
+- Retain a property that is read only via its synthesized projected value, e.g. a SwiftUI `@State` property passed as `$property`, so it is no longer falsely reported unused. Properties that are never read remain reported.
 
 ## 3.7.4 (2026-04-26)
 
