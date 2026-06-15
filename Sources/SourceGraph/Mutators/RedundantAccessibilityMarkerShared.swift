@@ -1,6 +1,5 @@
 // Shared utilities for redundant accessibility analysis mutators.
 
-<<<<<<< HEAD
 /// Tracks visited declarations to prevent infinite recursion in graph traversals.
 struct RecursionGuard {
     private var visited: Set<ObjectIdentifier> = []
@@ -12,14 +11,24 @@ struct RecursionGuard {
     }
 }
 
-=======
->>>>>>> d4483b0 (Handle implicit internal, fix false positives and false negatives, refactor checking)
 extension Declaration {
     /// Checks if this declaration is referenced outside its defining file.
     /// This is a common check used by multiple accessibility markers to determine
     /// if a declaration needs file-level or module-level accessibility.
     func isReferencedOutsideFile(graph: SourceGraph) -> Bool {
-        graph.references(to: self).map(\.location.file).contains { $0 != location.file }
+        if graph.references(to: self).map(\.location.file).contains(where: { $0 != location.file }) {
+            return true
+        }
+        // For stored properties, Swift's indexer emits references to implicit accessor children
+        // (getter/setter USRs) rather than the property itself. Check those children too.
+        if kind == .varInstance || kind == .varStatic {
+            for child in declarations {
+                if graph.references(to: child).map(\.location.file).contains(where: { $0 != location.file }) {
+                    return true
+                }
+            }
+        }
+        return false
     }
 
     /// Generic recursive descendent declaration finder with filtering.
@@ -35,11 +44,7 @@ extension Declaration {
     /// Checks if any ancestor declaration is marked as redundant in the given accessibility map.
     /// Used by accessibility markers to suppress nested warnings when a containing type is already flagged.
     /// This avoids redundant warnings since fixing the parent's accessibility fixes the children too.
-<<<<<<< HEAD
     func isAnyAncestorMarked(in markedDeclarations: Dictionary<Declaration, some Any>.Keys) -> Bool {
-=======
-    func isAnyAncestorMarked(in accessibilityMap: [Declaration: Any]) -> Bool {
->>>>>>> d4483b0 (Handle implicit internal, fix false positives and false negatives, refactor checking)
         var current = parent
         var visited: Set<Declaration> = []
 
@@ -50,11 +55,7 @@ extension Declaration {
 
             visited.insert(currentParent)
 
-<<<<<<< HEAD
             if markedDeclarations.contains(currentParent) {
-=======
-            if accessibilityMap[currentParent] != nil {
->>>>>>> d4483b0 (Handle implicit internal, fix false positives and false negatives, refactor checking)
                 return true
             }
             current = currentParent.parent
@@ -62,7 +63,6 @@ extension Declaration {
         return false
     }
 
-<<<<<<< HEAD
     /// Checks if this declaration or any of its immediate child declarations are
     /// referenced outside the defining file.
     ///
@@ -86,8 +86,6 @@ extension Declaration {
         return false
     }
 
-=======
->>>>>>> d4483b0 (Handle implicit internal, fix false positives and false negatives, refactor checking)
     /// Counts the number of ancestors for this declaration.
     /// Used for sorting declarations by depth to ensure parents are marked before children,
     /// which is important for nested redundant accessibility suppression logic.
@@ -100,7 +98,6 @@ extension Declaration {
         }
         return count
     }
-<<<<<<< HEAD
 
     /// Determines if a declaration should be skipped from all accessibility analysis.
     ///
@@ -254,6 +251,4 @@ extension SourceGraph {
 
         return false
     }
-=======
->>>>>>> d4483b0 (Handle implicit internal, fix false positives and false negatives, refactor checking)
 }

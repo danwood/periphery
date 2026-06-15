@@ -5,7 +5,7 @@ import Shared
 final class SwiftUIRetainer: SourceGraphMutator {
     private let graph: SourceGraph
     private let configuration: Configuration
-    private static let specialProtocolNames = ["LibraryContentProvider"]
+    private static let specialProtocolNames = ["App", "Commands", "LibraryContentProvider", "Scene"]
     private static let applicationDelegateAdaptorStructNames = ["UIApplicationDelegateAdaptor", "NSApplicationDelegateAdaptor"]
 
     required init(graph: SourceGraph, configuration: Configuration, swiftVersion _: SwiftVersion) {
@@ -46,16 +46,18 @@ final class SwiftUIRetainer: SourceGraphMutator {
         let candidateParents: Set<Declaration> = graph.mainAttributedDeclarations.isEmpty
             ? graph.declarations(ofKinds: [.class, .struct])
             : graph.mainAttributedDeclarations
-        candidateParents
-            .lazy
-            .flatMap(\.declarations)
-            .filter { $0.kind == .varInstance }
-            .filter {
-                $0.references.contains {
-                    ($0.declarationKind == .struct || $0.declarationKind == .enum) && Self.applicationDelegateAdaptorStructNames.contains($0.name)
+        for parent in candidateParents {
+            let adaptorProperties = parent.declarations
+                .filter { $0.kind == .varInstance }
+                .filter {
+                    $0.references.contains {
+                        ($0.declarationKind == .struct || $0.declarationKind == .enum) && Self.applicationDelegateAdaptorStructNames.contains($0.name)
+                    }
                 }
-            }
-            .forEach { property in
+            guard !adaptorProperties.isEmpty else { continue }
+
+            graph.markRetained(parent)
+            for property in adaptorProperties {
                 graph.markRetained(property)
                 // The delegate class (e.g. AppDelegate) is passed as a metatype argument
                 // to the adaptor. It exists only within the same file, so Periphery may
@@ -68,6 +70,7 @@ final class SwiftUIRetainer: SourceGraphMutator {
                     }
                 }
             }
+        }
     }
 
     private func unretainPreviewMacroExpansions() {
