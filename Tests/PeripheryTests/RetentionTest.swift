@@ -958,6 +958,15 @@ final class RetentionTest: FixtureSourceGraphTestCase {
         }
     }
 
+    func testRetainsViewReferencedFromViewBuilderHelper() {
+        analyze(retainPublic: true) {
+            assertReferenced(.struct("FixtureViewParent")) {
+                self.assertReferenced(.functionMethodInstance("helper(item:)"))
+            }
+            assertReferenced(.struct("FixtureViewChild"))
+        }
+    }
+
     func testRetainsCallAsFunction() {
         analyze(retainPublic: true) {
             assertReferenced(.struct("FixtureStruct1")) {
